@@ -1,4 +1,4 @@
 ﻿[*.cs]
 
 # CS0414: The field 'PlayerController.maxCharge' is assigned but its value is never used
-dotnet_diagnostic.CS0414.severity = silent
+dotnet_diagnostic.CS0414.severity = none

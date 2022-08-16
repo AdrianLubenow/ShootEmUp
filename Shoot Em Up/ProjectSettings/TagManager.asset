@@ -7,19 +7,20 @@ TagManager:
   - Friendly
   - Enemy
   - PHIDI
+  - Miniboss
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - BlueBullet
+  - Bullet
   - Water
   - UI
-  - HumanPlayerShip
-  - HumanRocket
-  - 
-  - 
-  - 
-  - 
+  - PlayerShip
+  - PlayerRocket
+  - Enemy
+  - AshdacBomb
+  - AceBullets
+  - PhidiBullets
   - 
   - 
   - 

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3265589792091106829}
   - component: {fileID: 3265589792091106830}
   - component: {fileID: 5945607405168587255}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: yural(enemy) left route 1
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -170,6 +170,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthPoints: 10000
+  canShoot: 0
+  fireRate: 0
+  bombPoint: {fileID: 0}
+  bomb: {fileID: 0}
+  explosion: {fileID: 9132695633611186171, guid: 424079e65d9a6034b943561e4ab1a37a, type: 3}
 --- !u!114 &3265589792091106829
 MonoBehaviour:
   m_ObjectHideFlags: 0
