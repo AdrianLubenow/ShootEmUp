@@ -272,19 +272,19 @@ public class UIManager : MonoBehaviour
     public void SetMasterVolume(float volume)
     {
         audioMixer.SetFloat("Master", volume);
-        AudioManager.instance.Save();
+        AudioManager.instance.SaveMaster();
     }
 
     public void SetMusicVolume(float volume)
     {
         audioMixer.SetFloat("Music", volume);
-        AudioManager.instance.Save();
+        AudioManager.instance.SaveMusic();
     }
 
     public void SetSoundFXVolume(float volume)
     {
         audioMixer.SetFloat("SoundFX", volume);
-        AudioManager.instance.Save();
+        AudioManager.instance.SaveSFX();
     }
 
     public void ToggleAudio()

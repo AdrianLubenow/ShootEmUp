@@ -53,31 +53,31 @@ public class AudioManager : MonoBehaviour
         if (!PlayerPrefs.HasKey("Master"))
         {
             PlayerPrefs.SetFloat("Master", 0);
-            Load();
+            LoadMaster();
         }
         else
         {
-            Load();
+            LoadMaster();
         }
 
         if (!PlayerPrefs.HasKey("SoundFX"))
         {
             PlayerPrefs.SetFloat("SoundFX", 0);
-            Load();
+            LoadSFX();
         }
         else
         {
-            Load();
+            LoadSFX();
         }
 
         if (!PlayerPrefs.HasKey("Music"))
         {
             PlayerPrefs.SetFloat("Music", 0);
-            Load();
+            LoadMusic();
         }
         else
         {
-            Load();
+            LoadMusic();
         }
 
         Play("MainMenuThemeTrap");
@@ -95,17 +95,29 @@ public class AudioManager : MonoBehaviour
     }
 
 
-    private void Load()
+    private void LoadMaster()
     {
         UIManager.instance.masterSlider.value = PlayerPrefs.GetFloat("Master");
-        UIManager.instance.sfxSlider.value = PlayerPrefs.GetFloat("SoundFX");
+    }
+    private void LoadMusic()
+    {
         UIManager.instance.musicSlider.value = PlayerPrefs.GetFloat("Music");
     }
+    private void LoadSFX()
+    {
+        UIManager.instance.sfxSlider.value = PlayerPrefs.GetFloat("SoundFX");
+    }
 
-    public void Save()
+    public void SaveMaster()
     {
         PlayerPrefs.SetFloat("Master", UIManager.instance.masterSlider.value);
-        PlayerPrefs.SetFloat("SoundFX", UIManager.instance.sfxSlider.value);
+    }
+    public void SaveMusic()
+    {
         PlayerPrefs.SetFloat("Music", UIManager.instance.musicSlider.value);
+    }
+    public void SaveSFX()
+    {
+        PlayerPrefs.SetFloat("SoundFX", UIManager.instance.sfxSlider.value);
     }
 }
