@@ -14,9 +14,13 @@ public class Enemy : MonoBehaviour
     public GameObject bomb;
     public GameObject explosion;
 
-    private void Awake()
+    [HideInInspector] public Vector2 powerUpSpawnPoint;
+
+    private void OnEnable()
     {
         rigidBody = GetComponent<Rigidbody2D>();
+        LevelManager.enemyCount++;
+        UIManager.instance.isCheckForEnemiesPaused = false;
     }
 
     void Start()
@@ -26,7 +30,7 @@ public class Enemy : MonoBehaviour
         if (canShoot)
         {
             fireRate = fireRate + (Random.Range(fireRate / -2, fireRate / 2));
-            InvokeRepeating("Shoot", fireRate / 2, fireRate);
+            InvokeRepeating("Shoot", fireRate * 1.5f, fireRate);
         }
     }
 
@@ -53,7 +57,18 @@ public class Enemy : MonoBehaviour
     private void Die()
     {
         Instantiate(explosion, transform.position, transform.rotation = Quaternion.identity);
+        FindObjectOfType<AudioManager>().Play("ShipDeath");
+
+        if (LevelManager.enemyCount == 1)
+            LevelManager.instance.SpawnRandomPowerUp(transform.position, 1);
+        else
+            LevelManager.instance.SpawnRandomPowerUp(transform.position, Random.Range(0, 100));
+
+        LevelManager.instance.SpawnRandomHealingBuff(transform.position, Random.Range(0, 100));
+        
         Destroy(gameObject);
+        LevelManager.enemyCount--;
+        
     }
     public void Damage(float damagePoints)
     {
@@ -62,11 +77,12 @@ public class Enemy : MonoBehaviour
 
     private void Shoot()
     {
-        bomb = ObjectPool.SharedInstance.GetEnemyPooledObject();
+        bomb = ObjectPool.instance.GetEnemyPooledObject();
         if (bomb != null)
         {
             bomb.transform.position = bombPoint.transform.position;
+            FindObjectOfType<AudioManager>().Play("AshdacFire");
             bomb.SetActive(true);
         }
-    }
+    }   
 }

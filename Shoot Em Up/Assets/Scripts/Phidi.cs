@@ -1,30 +1,23 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Phidi : MonoBehaviour
 {
-    private Rigidbody2D rigidBody;
     private Transform targetPlayer;
 
     public float healthPoints = 100000;
 
-    private float fireRate = 5f;
-    private float moveSpeed = 2.5f;
-
-    //public Transform targetPlayer;
-    //private Vector2 targetPosition = Vector2.zero;
-
+    private readonly float fireRate = 5f;
+    private readonly float moveSpeed = 2.5f;
 
     private Vector2 targetPosition;
 
-    private float chargeSpeed = 7f;
-    private float chargeCoolDown = 12f;
+    private readonly float chargeSpeed = 4.5f;
+    private const float kChargeCoolDown = 12f;
+    private float chargeCounter = 12f;
     private Vector3 positionToChargeTowards;
-    private bool _shouldCharge = false;
-    private bool _isCharging = false;
+    private float timeForCharge = 2.5f;
+    private bool isCharging = false;
 
     public GameObject bulletPointLeft;
     public GameObject bulletPointMiddle;
@@ -32,33 +25,28 @@ public class Phidi : MonoBehaviour
     public GameObject explosion;
     private List<GameObject> bulletPoints = new List<GameObject>();
 
-    private void Awake()
-    {
-        rigidBody = GetComponent<Rigidbody2D>();
-    }
-
-    void Start()
-    {
-        targetPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-
-        targetPosition = GetRandomPosition();
-
-        InvokeRepeating("Shoot", fireRate, fireRate);
-    }
-
     private void OnEnable()
     {
         bulletPoints.Add(bulletPointLeft);
         bulletPoints.Add(bulletPointRight);
         bulletPoints.Add(bulletPointMiddle);
+
+        targetPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        LevelManager.enemyCount++;
+        UIManager.instance.isCheckForEnemiesPaused = false;
+    }
+
+    void Start()
+    {
+        targetPosition = GetRandomPosition();
+
+        InvokeRepeating("Shoot", fireRate * 1.5f, fireRate);
     }
 
     private void OnDisable()
     {
         bulletPoints.Clear();
     }
-
-
 
     void Update()
     {
@@ -70,44 +58,40 @@ public class Phidi : MonoBehaviour
     {
         if (targetPlayer == null) return;
 
-        if (_shouldCharge)
+        if (chargeCounter <= 0f)
         {
             Charge();
-        }
-
-        if (chargeCoolDown <= 0f)
-        {
-            if (!_isCharging)
-                positionToChargeTowards = targetPlayer.position;
-
-
-            _shouldCharge = true;
         }
         else
         {
             RandomMovement();
-            chargeCoolDown -= Time.deltaTime;
+            chargeCounter -= Time.deltaTime;
+            isCharging = false;
         }
     }
 
-    private void Charge() 
+    private void Charge()
     {
-        if (targetPlayer != null)
+        if (targetPlayer == null)
+            return;
+
+        if (!isCharging)
         {
-            _isCharging = true;
-            var pos = positionToChargeTowards;
+            FindObjectOfType<AudioManager>().Play("PhidiCharge");
+            isCharging = true;
+        }
 
-            if (transform.position != pos)
-            {
-                transform.position = Vector2.MoveTowards(transform.position, pos, Time.deltaTime * chargeSpeed);
-            }
+        positionToChargeTowards = targetPlayer.position;
 
-            else
-            {
-                chargeCoolDown = 12f;
-                _shouldCharge = false;
-                _isCharging = false;
-            }
+        if (transform.position != positionToChargeTowards && timeForCharge > 0)
+        {
+            timeForCharge -= Time.deltaTime;
+            transform.position = Vector2.MoveTowards(transform.position, positionToChargeTowards, Time.deltaTime * chargeSpeed);
+        }
+        else
+        {
+            chargeCounter = kChargeCoolDown;
+            timeForCharge = 2.5f;
         }
     }
 
@@ -130,6 +114,13 @@ public class Phidi : MonoBehaviour
     private void Die()
     {
         Instantiate(explosion, transform.position, transform.rotation = Quaternion.identity);
+        FindObjectOfType<AudioManager>().Play("ShipDeath");
+
+        if (LevelManager.enemyCount == 1)
+            LevelManager.instance.SpawnRandomPowerUp(transform.position, 1);
+
+        LevelManager.instance.SpawnRandomHealingBuff(transform.position, 1);
+        LevelManager.enemyCount--;
         Destroy(gameObject);
     }
 
@@ -146,6 +137,8 @@ public class Phidi : MonoBehaviour
                 collision.gameObject.GetComponent<PlayerController>().DeactivateShield();
             else
                 collision.gameObject.GetComponent<PlayerHealth>().Damage(3000);
+
+            FindObjectOfType<AudioManager>().Play("HitSoundEffect");
         }
     }
 
@@ -153,10 +146,11 @@ public class Phidi : MonoBehaviour
     {
         for (int i = 0; i < bulletPoints.Count; i++)
         {
-            GameObject bossBullet = ObjectPool.SharedInstance.GetBossPooledObject();
+            GameObject bossBullet = ObjectPool.instance.GetBossPooledObject();
             if (bossBullet != null)
             {
                 bossBullet.transform.position = bulletPoints[i].transform.position;
+                FindObjectOfType<AudioManager>().Play("PhidiFire");
                 bossBullet.SetActive(true);
             }
         }

@@ -45,10 +45,11 @@ public class PlayerRocket : MonoBehaviour
                     var closestPoint = hitCollider.ClosestPoint(transform.position);
                     var distance = Vector3.Distance(closestPoint, transform.position);
 
-                    if (distance < 0.8)
+                    if (distance < 50)
                     {
                         hitCollider.gameObject.GetComponent<Enemy>().Damage(rocketDamage);
                         Instantiate(explosion, transform.position, transform.rotation = Quaternion.identity);
+                        FindObjectOfType<AudioManager>().Play("RocketExplosion");
                         Destroy(gameObject);
                     }
                     else
@@ -69,6 +70,7 @@ public class PlayerRocket : MonoBehaviour
                         }
 
                         Instantiate(explosion, transform.position, transform.rotation = Quaternion.identity);
+                        FindObjectOfType<AudioManager>().Play("RocketExplosion");
                         Destroy(gameObject);
                     }
                 }
@@ -77,10 +79,11 @@ public class PlayerRocket : MonoBehaviour
                     var closestPoint = hitCollider.ClosestPoint(transform.position);
                     var distance = Vector3.Distance(closestPoint, transform.position);
 
-                    if (distance < 0.8)
+                    if (distance < 50)
                     {
                         hitCollider.gameObject.GetComponent<AceMiniboss>().Damage(rocketDamage);
                         Instantiate(explosion, transform.position, transform.rotation = Quaternion.identity);
+                        FindObjectOfType<AudioManager>().Play("RocketExplosion");
                         Destroy(gameObject);
                     }
                     else
@@ -101,6 +104,7 @@ public class PlayerRocket : MonoBehaviour
                         }
 
                         Instantiate(explosion, transform.position, transform.rotation = Quaternion.identity);
+                        FindObjectOfType<AudioManager>().Play("RocketExplosion");
                         Destroy(gameObject);
                     }
                 }
@@ -109,10 +113,11 @@ public class PlayerRocket : MonoBehaviour
                     var closestPoint = hitCollider.ClosestPoint(transform.position);
                     var distance = Vector3.Distance(closestPoint, transform.position);
 
-                    if (distance < 0.8)
+                    if (distance < 50)
                     {
                         hitCollider.gameObject.GetComponent<Phidi>().Damage(rocketDamage);
                         Instantiate(explosion, transform.position, transform.rotation = Quaternion.identity);
+                        FindObjectOfType<AudioManager>().Play("RocketExplosion");
                         Destroy(gameObject);
                     }
                     else
@@ -133,6 +138,7 @@ public class PlayerRocket : MonoBehaviour
                         }
 
                         Instantiate(explosion, transform.position, transform.rotation = Quaternion.identity);
+                        FindObjectOfType<AudioManager>().Play("RocketExplosion");
                         Destroy(gameObject);
                     }
                 }

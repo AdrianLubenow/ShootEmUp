@@ -17,21 +17,22 @@ public class AceMiniboss : MonoBehaviour
     public GameObject aceBullet;
     public GameObject explosion;
 
-
-    private void Awake()
+    private void OnEnable()
     {
+        targetPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         rigidBody = GetComponent<Rigidbody2D>();
+        LevelManager.enemyCount++;
+        UIManager.instance.isCheckForEnemiesPaused = false;
     }
 
     void Start()
     {
-        targetPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         targetPosition = new Vector2(targetPlayer.position.x, transform.position.y);
 
-        InvokeRepeating("Shoot", fireRate, fireRate);
+        InvokeRepeating("Shoot", fireRate * 1.5f, fireRate);
     }
 
-    
+
     void Update()
     {
         if (healthPoints <= 0)
@@ -44,12 +45,20 @@ public class AceMiniboss : MonoBehaviour
 
             transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
         }
+
     }
 
     private void Die()
     {
         Instantiate(explosion, transform.position, transform.rotation = Quaternion.identity);
+        FindObjectOfType<AudioManager>().Play("ShipDeath");
+
+        if (LevelManager.enemyCount == 1)
+            LevelManager.instance.SpawnRandomPowerUp(transform.position, 1);
+
+        LevelManager.instance.SpawnRandomHealingBuff(transform.position, 1);
         Destroy(gameObject);
+        LevelManager.enemyCount--;
     }
 
 
@@ -61,6 +70,8 @@ public class AceMiniboss : MonoBehaviour
                 collider.gameObject.GetComponent<PlayerController>().DeactivateShield();
             else
                 collider.gameObject.GetComponent<PlayerHealth>().Damage(2000);
+
+            FindObjectOfType<AudioManager>().Play("HitSoundEffect");
         }
     }
 
@@ -72,10 +83,11 @@ public class AceMiniboss : MonoBehaviour
 
     private void Shoot()
     {
-        aceBullet = ObjectPool.SharedInstance.GetMiniBossPooledObject();
+        aceBullet = ObjectPool.instance.GetMiniBossPooledObject();
         if (aceBullet != null)
         {
             aceBullet.transform.position = bulletPoint.transform.position;
+            FindObjectOfType<AudioManager>().Play("AceShipFire");
             aceBullet.SetActive(true);
         }
     }

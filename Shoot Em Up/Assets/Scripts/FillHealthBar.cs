@@ -8,22 +8,20 @@ public class FillHealthBar : MonoBehaviour
     public Image fillImage;
 
     private Slider slider;
-    private PlayerHealth player;
+    private PlayerHealth playerHealth;
 
     private void OnEnable()
     {
         PlayerHealth.OnHealthChange += SetHealth;
+
+        slider = GetComponent<Slider>();
+        playerHealth = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerHealth>();
+        slider.maxValue = playerHealth.maxHealth;
+
     }
     private void OnDisable()
     {
         PlayerHealth.OnHealthChange -= SetHealth;
-    }
-
-    void Awake()
-    {
-        slider = GetComponent<Slider>();
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerHealth>();
-        slider.maxValue = player.maxHealth;
     }
 
     private void SetHealth(float fillValue)

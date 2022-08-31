@@ -43,6 +43,7 @@ public class Bullet : MonoBehaviour
             collision.gameObject.GetComponent<Enemy>().Damage(bulletDamage);
             PlayerController.OnBulletHit.Invoke(bulletDamage);
             Instantiate(explosion, transform.position, transform.rotation = Quaternion.Euler(0, 0, 90));
+            FindObjectOfType<AudioManager>().Play("HitSoundEffect");
             gameObject.SetActive(false);
         }
         else if(collision.gameObject.tag == "Miniboss")
@@ -50,6 +51,7 @@ public class Bullet : MonoBehaviour
             collision.gameObject.GetComponent<AceMiniboss>().Damage(bulletDamage);
             PlayerController.OnBulletHit.Invoke(bulletDamage);
             Instantiate(explosion, transform.position, transform.rotation = Quaternion.Euler(0, 0, 90));
+            FindObjectOfType<AudioManager>().Play("HitSoundEffect");
             gameObject.SetActive(false);
         }
         else if (collision.gameObject.tag == "Player")
@@ -62,11 +64,13 @@ public class Bullet : MonoBehaviour
             if (gameObject.layer == 9)
             {
                 Instantiate(explosion, transform.position, transform.rotation = Quaternion.identity);
+                FindObjectOfType<AudioManager>().Play("HitSoundEffect");
                 gameObject.SetActive(false);
             }
             else
             {
                 Instantiate(explosion, transform.position, transform.rotation = Quaternion.Euler(0, 0, 270));
+                FindObjectOfType<AudioManager>().Play("HitSoundEffect");
                 gameObject.SetActive(false);
             }
 
@@ -76,6 +80,7 @@ public class Bullet : MonoBehaviour
             collision.gameObject.GetComponent<Phidi>().Damage(bulletDamage);
             PlayerController.OnBulletHit.Invoke(bulletDamage);
             Instantiate(explosion, transform.position, transform.rotation = Quaternion.Euler(0, 0, 90));
+            FindObjectOfType<AudioManager>().Play("HitSoundEffect");
             gameObject.SetActive(false);
         }
     }

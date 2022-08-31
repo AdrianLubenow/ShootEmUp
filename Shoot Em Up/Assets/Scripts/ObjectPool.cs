@@ -1,18 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
-    public static ObjectPool SharedInstance;
+    public static ObjectPool instance;
 
     [Header("--- Enemy ---")]
     [SerializeField] private GameObject EnemyObject;
     [SerializeField] private int enemyAmountToPool;
-
-    [Header("--- Player ---")]
-    [SerializeField] private GameObject PlayerObject;
-    [SerializeField] private int playerAmountToPool;
 
     [Header("--- MiniBoss ---")]
     [SerializeField] private GameObject MiniBossObject;
@@ -22,24 +19,21 @@ public class ObjectPool : MonoBehaviour
     [SerializeField] private GameObject BossObject;
     [SerializeField] private int bossAmountToPool;
 
-    private List<GameObject> playerPooledObjects = new List<GameObject>();
-    private List<GameObject> enemyPooledObjects = new List<GameObject>();
-    private List<GameObject> miniBossPooledObjects = new List<GameObject>();
-    private List<GameObject> bossPooledObjects = new List<GameObject>();
-
-    void Awake()
+    private readonly List<GameObject> playerPooledObjects = new List<GameObject>();
+    private readonly List<GameObject> enemyPooledObjects = new List<GameObject>();
+    private readonly List<GameObject> miniBossPooledObjects = new List<GameObject>();
+    private readonly List<GameObject> bossPooledObjects = new List<GameObject>();
+    private void Awake()
     {
-        SharedInstance = this;
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+            Destroy(gameObject);
+
         Initialize();
-    }
-    private void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-
     }
 
     void Initialize()
@@ -52,15 +46,6 @@ public class ObjectPool : MonoBehaviour
                 tmp = Instantiate(EnemyObject, transform);
                 tmp.SetActive(false);
                 enemyPooledObjects.Add(tmp);
-            }
-        }
-        if (PlayerObject != null)
-        {
-            for (int i = 0; i < playerAmountToPool; i++)
-            {
-                tmp = Instantiate(PlayerObject, transform);
-                tmp.SetActive(false);
-                playerPooledObjects.Add(tmp);
             }
         }
         if (MiniBossObject != null)

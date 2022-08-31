@@ -9,10 +9,7 @@ public class PlayerHealth : MonoBehaviour
     public float maxHealth;
     public float currentHealth;
 
-    private PlayerController player;
-
     public static Action<float> OnHealthChange;
-
     private void Start()
     {
         currentHealth = maxHealth;
@@ -26,7 +23,9 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth <= 0)
             Die();
         else if (currentHealth > maxHealth)
+        {
             currentHealth = maxHealth;
+        }
     }
 
     public void Damage(float damagePoints)
@@ -40,6 +39,9 @@ public class PlayerHealth : MonoBehaviour
     private void Die()
     {
         Instantiate(explosion, transform.position, transform.rotation = Quaternion.identity);
+
+        FindObjectOfType<AudioManager>().Play("ShipDeath");
+        UIManager.instance.GameOver();
         Destroy(gameObject);
     }
 

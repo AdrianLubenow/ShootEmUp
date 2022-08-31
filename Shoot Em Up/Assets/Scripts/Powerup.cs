@@ -10,6 +10,7 @@ public class Powerup : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
+            FindObjectOfType<AudioManager>().Play("PowerUpPickup");
             Destroy(gameObject);
             powerupEffect.Apply(collision.gameObject);
         }
